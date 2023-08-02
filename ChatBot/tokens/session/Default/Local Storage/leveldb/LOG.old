@@ -1,0 +1,6 @@
+2023/08/01-21:39:09.686 274c Reusing MANIFEST /home/mateusfelix/Documentos/Estudo/chatBot-WhatsApp/ChatBot/tokens/session/Default/Local Storage/leveldb/MANIFEST-000001
+2023/08/01-21:39:09.686 274c Recovering log #3
+2023/08/01-21:39:09.687 274c Reusing old log /home/mateusfelix/Documentos/Estudo/chatBot-WhatsApp/ChatBot/tokens/session/Default/Local Storage/leveldb/000003.log 
+2023/08/01-21:47:10.904 2a15 Level-0 table #5: started
+2023/08/01-21:47:10.914 2a15 Level-0 table #5: 28833 bytes OK
+2023/08/01-21:47:10.917 2a15 Delete type=0 #3
