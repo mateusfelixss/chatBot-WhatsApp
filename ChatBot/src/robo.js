@@ -6,8 +6,6 @@ var userStages = [];
 wppconnect.create({
     session: 'whatsbot',
     autoClose: false,
-    // onStateChange: false,
-    // onInterfaceChange: false,
     pupperteerOptions: { args: ['--no-sandbox'] }
 })
     .then((client) =>
@@ -20,65 +18,41 @@ wppconnect.create({
     .catch((error) =>
         console.log(error));
 
-
 // busca por usuario já cadastrado no BD
 async function queryUserByPhone(client, message) {
     let phone = (message.from).replace(/[^\d]+/g, '');
     let userdata = await firebasedb.queryByPhone(phone);
     if (userdata == null) {
-        userdata = await saveUser(message);   // saveUser so pode receber um parametro
+        userdata = await saveUser(message); 
     }
     console.log('Usuario Corrente: ' + userdata['id']);
     stages(client, message, userdata);
 }
 
-
-//  Stages = Boas vindas  >>  Nome  >>  Seu telefone  >> Fim
-async function stages(client, message, userdata) {
-    if (userStages[message.from] == undefined) {
-        sendWppMessage(client, message.from, 'Bem vindo ao Robô de Whatsapp do Mateus! Essas mensagens automaticas');
+//  gerencia fluxo de mensagens
+async function stages(client, message, userdata) {    
+    if (message.body == 'start')
+        sendWppMessage(client, message.from, 'Olá, sou seu assistente pessoal, comigo você poderá guardar sua lista de atividades a fazer! Escolha uma das opções abaixo: \n 1. Criar uma lista de atividades \n 2. Recuperar lista cadastrada');
+    else if (message.body == '1') {
+        sendWppMessage(client, message.from, 'Beleza! Manda pra mim sua lista em apenas uma mensagem.');
+        client.onMessage((message) => {
+            console.log('Teste 03: '  + userdata['whatsapp']);
+            if (message.isGroupMsg === false && userdata['whatsapp'] == (message.from).replace(/[^\d]+/g, '')) {
+                console.log('Messagem Mandada: ' + message.body);
+                userdata['activity'] = message.body;
+                firebasedb.update(userdata)
+                    .then((result) => {
+                        sendWppMessage(client, message.from, 'Show, adicionei sua lista.');
+                        console.log(result);
+                    })
+                    .catch((error) => {
+                        console.error('ERRO: ', error)
+                    })
+            }   
+        })
     }
-    if (userdata['nome'] == undefined) {
-        if (userStages[message.from] == undefined) {
-            sendWppMessage(client, message.from, 'Digite seu *NOME*:');
-            userStages[message.from] = 'nome';
-        } else {
-            userdata['nome'] = message.body;
-            firebasedb.update(userdata);
-            sendWppMessage(client, message.from, 'Obrigado, ' + message.body);
-            sendWppMessage(client, message.from, 'Digite seu *TELEFONE*:');
-            userStages[message.from] = 'telefone';
-        }
-
-    } else if (userdata['telefone'] == undefined) {
-        if (userStages[message.from] == undefined) {
-            sendWppMessage(client, message.from, 'Digite seu *TELEFONE*:');
-            userStages[message.from] = 'telefone';
-        } else {
-            userdata['telefone'] = (message.body).replace(/[^\d]+/g, '');
-            firebasedb.update(userdata);
-            sendWppMessage(client, message.from, 'Obrigada por informar seu telefone: ' + message.body);
-            sendWppMessage(client, message.from, 'Digite o recado que você tem para o Mateus: ');
-            userStages[message.from] = 'recado';
-        }
-
-    } else if (userdata['recado'] == undefined) {
-        if (userStages[message.from] == undefined) {
-            sendWppMessage(client, message.from, 'Oii, ' +  userdata['nome'] + '. Digite seu *RECADO*:');
-            userStages[message.from] = 'recado';
-        } else {
-            firebasedb.update(userdata);
-            sendWppMessage(client, message.from, 'Obrigada por informar seu recado: ' + message.body);
-            sendWppMessage(client, message.from, 'Em breve entro em contato. Tchau');
-            userStages[message.from] = 'fim';
-        }
-
-    } else {
-        if (userStages[message.from] == undefined) {
-            userStages[message.from] = 'fim';
-        }
-        sendWppMessage(client, message.from, 'Fim');
-    }
+    else if (message.body == '2')
+        sendWppMessage(client, message.from, userdata['activity']);
 }
 
 //funcao de envio de mensagem
