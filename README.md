@@ -37,6 +37,6 @@ Após a configuração no site do Firebase, um arquivo .json será gerado e o me
 + [Visual Studio Code](https://code.visualstudio.com/)
 
 ## Trabalhos futuros e contribuições
-Esse projeto ainda está em desenvolvimento e suas proximas etapas cosiste no desenvolvimento das funcionalidades de *update* e *delete*. Durante os processos de desenvolvimento, ajustes para uma melhor compreensão do sistema serão feitos, assim como novas informações serão adicionadas a esse documento.
+Esse projeto ainda está em desenvolvimento e suas proximas etapas consiste no desenvolvimento das funcionalidades de *update* e *delete*. Durante os processos de desenvolvimento, ajustes para uma melhor compreensão do sistema serão feitos, assim como novas informações serão adicionadas a esse documento.
 
 Quem se interessar pode estar contribuindo para o desenvolvimento.
